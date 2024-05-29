@@ -1,8 +1,14 @@
-# Brainbase Terminal
+# Brainbase Terminal Template
 
-Brainbase Terminal is an internal AI worker for Brainbase that helps with running repetitive actions on local files.
+This assignment requires you to create the Brainbase Terminal internal AI worker.
 
-## Installing Brainbase Terminal
+## Introduction
+
+When coding, it's common to hit on a task that needs to get done repeatedly on multiple files. This could be refactoring, commenting, etc. Since these are local files, ChatGPT can't help us here.
+
+Your first task at Brainbase is to follow our motto and *make yourself useless* by making an AI worker that can run in your terminal and run your commands on your local files.
+
+## Installing the template
 
 ### Prerequisites
 
@@ -53,55 +59,66 @@ node main.js
 
 To exit the chat, simply type `exit` and hit enter. The application will close.
 
-## Access
+## Components
 
-It it very important that terminal only has access to directories that the user gives it access to. This is done by adding each accessible directory to the `.access` file in root. These are **relative** paths with respect to where the terminal is being called right now.
+The assignment has the following components:
 
-## Using Terminal
+- `main.js`: Primary part where the terminal chat application runs
+- `functions.js`: Some utility functions that need to be implemented for Terminal to be able to interact with the file system (feel free to add more functions as you need)
+- `log_utils.js`: Some utility functions for logs (no need to touch)
+- `.allowed`: Config file to add the directories Terminal has access to
+- `/ws`: Example of a directory that Terminal has access to, with some example files for tests
 
-Terminal provides a chat interface for you to explain what kind of functions you want to run.
+## Milestones
 
-Here are some examples:
+**This is a challenging assignment.** Therefore you're given the following milestones that get progressively more difficult, and provide necessary structure for how to implement the entire system.
 
-### Create multiple files
+### Milestone 1: Terminal Chat
+For Milestone 1, all you need to do is connect the provided application to the OpenAI Assistants API (don't use the regular GPT API) to create a lite version of ChatGPT on the terminal. **No function calling or streaming necessary.**
 
+#### Criteria
+- [ ] The OpenAI API is successfully set up.
+- [ ] The system is able to keep a conversation going.
+
+### Milestone 2: Talking with your files
+For Milestone 2, you need to allow your basic chat app from Milestone 1 to access the files in your local directory.
+
+#### Criteria
+- [ ] Function `run_terminal_command` is created
+- [ ] Function `run_terminal_command` **can not run a `rm` commands** (this is a very important guardrail)
+- [ ] Function `run_terminal_command` **does not run any command** unless the file that's being is under an allowed directory from `.allowed`
+- [ ] The necessary functions are created as [tools](https://platform.openai.com/docs/guides/function-calling) **This is very important for the next milestone.** 
+- [ ] User can ask Terminal to get contents of files in directories, to create new files, to run arbitrary commands
+- [ ] User can run the Python to Javascript conversion test from the main `README.md`
+ 
+### Milestone 3: Reading and modifying files
+For the last milestone, you need to allow Terminal to **modify** files.
+
+#### Criteria
+- [ ] Function `read_file` is created. This function reads a given file with indexes appended to the beginning, example:
 ```bash
-User: I want you to go through all of the files in `/ws/python`, convert them to Javascript and save them to `/ws/javascript`.
+1. from flask import Flask, render_template, request, redirect, url_for
+2. 
+3. app = Flask(__name__)
+4. 
+5. @app.route('/')
+6. def home():
+7.     return "Hello, Flask!"
+8. 
+9. @app.route('/hello/<name>')
+10. def hello(name):
+11.     return f"Hello, {name}!"
+12. 
+13. if __name__ == '__main__':
+14.     app.run(debug=True)
 ```
+**Lines are indexed starting at 1.**
+- [ ] Function `modify_file` is created. This function replaces a certain line range in a file with the provided code segment.
+- [ ] Before `modify_file` is called, Terminal **must** run the `read_file` action on the same path to see the line numbers. Should throw an error otherwise.
+- [ ] Terminal can use these functions to modify files according to instructions (error correction example from main `README.md`)
 
-Following this, Terminal should potentially take the following actions:
-```bash
-Terminal: [Ran terminal command: cd /ws/python]
-Terminal: [Ran terminal command: ls]
-Terminal: [Ran terminal command: cat /ws/python/file1.py]
-Terminal: [Ran terminal command: echo <JS CODE FOR FILE 1> > /ws/javascript/file1.js] // <- Here Terminal will get an error message that /ws/javascript/file1.js doesn't exist
-Terminal: [Ran terminal command: mkdir /ws/javascript]
-Terminal: [Ran terminal command: touch /ws/javascript/file1.js]
-Terminal: [Ran terminal command: echo <JS CODE FOR FILE 1> > /ws/javascript/file1.js] // <- This time this code will run
-Terminal: [Ran terminal command: cat /ws/python/file2.py]
-Terminal: [Ran terminal command: touch /ws/javascript/file2.js]
-Terminal: [Ran terminal command: echo <JS CODE FOR FILE 2> > /ws/javascript/file2.js] // <- This time this code will run
-Terminal: I have created two files in /ws/javascript and wrote the javascript versions of the code to them. Is there anything else I can help with?
-```
+## Final run
+Once all three milestones are succesfully completed, you should now have an AI worker that you can have a conversation with and have it run tasks on your local files.
 
-### Fix errors in a file
-
-```bash
-User: I'm getting an error in /ws/error.cpp, can you take a look and let me know what the problem is?
-```
-
-Following this, Terminal should potentially take the following actions:
-```bash
-Terminal: [Ran terminal command: cat /ws/error.cpp]
-Terminal: It looks like <ERROR STATEMENT>, would you like me to fix it?
-```
-
-```bash
-User: Yes please fix it.
-```
-
-```bash
-Terminal: [/ws/error.cpp] Read file <- Terminal uses the available read_file function because it needs to know the line numbers of each line code to localize the error
-Terminal: [/ws/error.cpp:<LINE NUMBER OF ERROR START>-<LINE NUMBER OF ERROR END>] Modified file
-Terminal: Okay the error should be fixed now.
-```
+## Notes
+The important thing here isn't that Terminal is able to perfectly run every task, it is that it makes it faster and overall a better experience for us to work with our local files. This symbiosis is what we strive to provide our customers with Brainbase as well.
