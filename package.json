@@ -2,14 +2,24 @@
   "name": "brainbase-terminal",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "main.ts",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "bun build ./main.ts --target=bun --outfile=./compiled.mjs",
+    "start": "bun run ./compiled.mjs",
+    "dev": "bun run ./main.ts"
   },
   "bin": {
-    "brainbase-kafka": "./main.js"
+    "brainbase-terminal": "./compiled.mjs"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
 }
