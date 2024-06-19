@@ -6,7 +6,7 @@ Brainbase Terminal is an internal AI worker for Brainbase that helps with runnin
 
 ### Prerequisites
 
-Before you begin, ensure you have Node.js installed on your machine. If not, you can download and install it from [Node.js official website](https://nodejs.org/).
+Before you begin, ensure you have Bun installed on your machine. If not, you can download and install it from [Bun official website](https://bun.sh/).
 
 ### Installation
 
@@ -21,18 +21,18 @@ Since the project uses only built-in Node.js modules, no additional npm installa
 
 ### Making the Script Executable
 
-To make the `main.js` script executable, run the following command:
+To make the `compiled.mjs` script executable, run the following command:
 
 ```bash
-chmod +x main.js
+chmod +x compiled.mjs
 ```
 
 ### Linking the Package
 
-Link the package globally on your system to run it from anywhere using `npx`. Navigate to the project directory and run:
+Link the package globally on your system to run it from anywhere using `bunx`. Navigate to the project directory and run:
 
 ```bash
-npm link
+bunx link
 ```
 
 ### Usage
@@ -40,13 +40,13 @@ npm link
 To start the chat application, you can use the following command from anywhere in your terminal:
 
 ```bash
-npx brainbase-terminal-template
+bunx brainbase-terminal-template
 ```
 
 Alternatively, you can also run the script directly using Node.js if you are in the project directory:
 
 ```bash
-node main.js
+bun compiled.mjs
 ```
 
 ### Exiting the Chat
@@ -70,6 +70,7 @@ User: I want you to go through all of the files in `/ws/python`, convert them to
 ```
 
 Following this, Terminal should potentially take the following actions:
+
 ```bash
 Terminal: [Ran terminal command: cd /ws/python]
 Terminal: [Ran terminal command: ls]
@@ -91,6 +92,7 @@ User: I'm getting an error in /ws/error.cpp, can you take a look and let me know
 ```
 
 Following this, Terminal should potentially take the following actions:
+
 ```bash
 Terminal: [Ran terminal command: cat /ws/error.cpp]
 Terminal: It looks like <ERROR STATEMENT>, would you like me to fix it?
